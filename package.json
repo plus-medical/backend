@@ -1,6 +1,6 @@
 {
   "name": "plus-medical-backend",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "REST API for laboratory test administration",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   "keywords": [],
   "contributors": [
     "Edwin García <spark.com.co@gmail.com>",
-    "Wilson Romero"
+    "Wilson Romero <me@wilsonromero.com>"
   ],
   "license": "MIT",
   "bugs": {
