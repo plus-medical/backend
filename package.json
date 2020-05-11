@@ -1,0 +1,39 @@
+{
+  "name": "plus-medical-backend",
+  "version": "0.1.0",
+  "description": "REST API for laboratory test administration",
+  "main": "index.js",
+  "scripts": {
+    "dev": "DEBUG=app* nodemon src/index.js",
+    "lint": "eslint ./src/",
+    "lint:fix": "eslint ./src/ --fix",
+    "start": "NODE_ENV=production node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plus-medical/backend.git"
+  },
+  "keywords": [],
+  "contributors": [
+    "Edwin García <spark.com.co@gmail.com>",
+    "Wilson Romero <me@wilsonromero.com>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/plus-medical/backend/issues"
+  },
+  "homepage": "https://github.com/plus-medical/backend#readme",
+  "dependencies": {
+    "debug": "4.1.1",
+    "dotenv": "8.2.0",
+    "express": "4.17.1"
+  },
+  "devDependencies": {
+    "eslint": "6.8.0",
+    "eslint-config-airbnb-base": "14.1.0",
+    "eslint-plugin-import": "2.20.2",
+    "husky": "4.2.5",
+    "nodemon": "2.0.3"
+  }
+}
