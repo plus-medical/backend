@@ -1,6 +1,6 @@
 # Couchbase
-DB_HOST=db
-DB_PORT=8091
-DB_DB=plus
-DB_USER=diagram-handyman-supply-vacancy-tattle
-DB_PASSWORD=wwNih<Kp7joXzlVj0buzEpopen14t3hh0(:\gpmzvzs/@Q#zSc
+COUCHBASE_HOST=db
+COUCHBASE_PORT=8091
+COUCHBASE_DB=plus
+COUCHBASE_USER=purifier-musty-wieldable-trapdoor-profane
+COUCHBASE_PASSWORD=sCmml?FUY4f@pefwo3p4by3p6Vio$Lnxxi"Vvgg@2wv6m*wq>a
