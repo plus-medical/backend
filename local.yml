@@ -1,0 +1,13 @@
+version: '3'
+
+volumes:
+  local_couchbase_data: {}
+
+services:
+  db:
+    image: couchbase:enterprise-6.5.1
+    ports:
+      - '8091-8094:8091-8094'
+      - '11210:11210'
+    volumes:
+      - local_couchbase_data:/opt/couchbase/var/lib/couchbase
