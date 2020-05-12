@@ -1,0 +1,11 @@
+*.log
+.dockerignore
+.git
+.gitignore
+.env
+build/*
+Dockerfile
+compose
+node_modules
+npm-debug.log*
+README.md
