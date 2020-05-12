@@ -177,8 +177,3 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/node,linux,macos,windows
-
-
-# dotenv environment variables file
-.envs/.local/.couchbase
-# End of dotenv environment variables file
