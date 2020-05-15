@@ -1,0 +1,25 @@
+{
+  "id": "user::88d195cd-0954-46c7-9ddb-7d41a7983e08",
+  "type": "user",
+  "person": {
+    "documentType": "CC",
+    "document": "79878756",
+    "name": {
+      "first": "Wilson",
+      "last": "Romero Carrasco"
+    },
+    "email": "wilson.romero@gmail.com",
+    "birthday": "1978/11/03",
+    "gender": "M",
+    "address": {
+      "street": "Cl 77B #87A-09",
+      "city": "Bogotá",
+      "state": "DC",
+      "zip": "1101001"
+    },
+    "phoneNumber": "3044356798"
+  },
+  "password": "p455w0rd",
+  "photo": "string",
+  "isActive": true
+}

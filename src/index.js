@@ -1,8 +1,11 @@
 const express = require('express');
 const debug = require('debug')('app:server');
-const { config: { port } } = require('./config');
 
 const app = express();
+
+const {
+  config: { port },
+} = require('./config');
 
 app.get('/', (req, res) => {
   res.send('Hello world!');
