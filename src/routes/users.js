@@ -1,61 +1,59 @@
-// const express = require('express');
-// const bodyParser = require('body-parser');
-// const db = require('../schema/db');
-// const person = require('../schema/model/person');
-// const user = require('../schema/model/user');
+const express = require('express');
 
-// const jsonParser = bodyParser.json();
-// const urlencodedParser = bodyParser.urlencoded({ extended: false });
+const router = express.Router();
+const UsersService = require('../services/users');
 
-// module.exports = function (app) {
-//   app.use((req, res, next) => {
-//     res.header('Access-Control-Allow-Origin', '*');
-//     res.header(
-//       'Access-Control-Allow-Headers',
-//       'Origin, X-Requested-With, Content-Type, Accept',
-//     );
-//     next();
-//   });
+const userService = new UsersService();
 
-// const router = express.Router();
-// app.use('/v1/users', router);
+router.get('/', async (req, res, next) => {
+  const { query } = req;
+  try {
+    const users = await userService.getUsers(query);
+    res.status(200).json({ data: users, message: 'users listed' });
+  } catch (error) {
+    next(error);
+  }
+});
 
-// Mostrar todos los usuarios
-// router.get('/', async (req, res, next) => {
-//   res.send('Users');
-// });
+router.get('/:key', async (req, res, next) => {
+  const { key } = req.params;
+  try {
+    const user = await userService.getUser(key);
+    res.status(200).json({ data: user, message: 'user retrieved' });
+  } catch (error) {
+    next(error);
+  }
+});
 
-// router.get('/:id', async (req, res, next) => {
-// Mostrar  el usuario con el :id
-// });
+router.post('/', async (req, res, next) => {
+  const { body: user } = req;
+  try {
+    const newUser = await userService.createUser({ user });
+    res.status(201).json({ data: newUser, message: 'user created' });
+  } catch (error) {
+    next(error);
+  }
+});
 
-// router.get('/:document', async (req, res, next) => {
-// Mostrar  el usuario con el :document
-// });
+router.put('/:id', async (req, res, next) => {
+  const { id } = req.params;
+  const { body: user } = req;
+  try {
+    const updateUser = await userService.updateUser(id, { user });
+    res.status(200).json({ data: updateUser, message: 'user update' });
+  } catch (error) {
+    next(error);
+  }
+});
 
-// Crear un nuevo usuario
-// router.post('/', jsonParser, (req, res) => {
-//   const data = req.body;
-//   console.log(data);
-// });
+router.delete('/:id', async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const user = await userService.deleteUser(id);
+    res.status(200).json({ data: user, message: 'user delete' });
+  } catch (error) {
+    next(error);
+  }
+});
 
-// router.patch('/:id', async (req, res, next) => {
-// Actualiza un usuario con el :id
-// });
-
-// router.delete('/:id', async (req, res, next) => {
-// Elimina un usuario con el :id
-// });
-
-//   app.get('/api/bike/find', (req, res) => {
-//     bike.find(req.query, (err, done) => {
-//       if (err) {
-//         res.status = 400;
-//         res.send(err);
-//         return;
-//       }
-//       res.status = 202;
-//       res.send(done);
-//     });
-//   });
-// };
+module.exports = router;

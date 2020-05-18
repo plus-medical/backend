@@ -1,32 +1,57 @@
 const ottoman = require('ottoman');
-
-const UserModel = ottoman.model(
+const { phoneValidator, roleValidator } = require('../../utils/validators');
+var userModel = ottoman.model(
   'User',
   {
-    id: { type: 'string', readonly: true },
-    type: 'string',
-    person: { ref: 'Person' },
+    username: 'string',
+    role: { type: 'string', validator: roleValidator },
+    documentType: 'string',
+    document: 'number',
+    name: {
+      first: 'string',
+      last: 'string',
+    },
+    email: 'string',
     password: 'string',
+    birthdate: 'Date',
+    gender: 'string',
+    address: {
+      street: 'string',
+      city: 'string',
+      state: 'string',
+      zip: 'integer',
+      country: { type: 'string', default: 'COL' },
+    },
+    phone: { type: 'string', validator: phoneValidator },
     photo: 'string',
-    is_active: { type: 'boolean', default: true },
-    last_login: { type: 'Date', default: new Date() },
-    created_at: { type: 'Date', default: new Date(), readonly: true },
-    update_at: { type: 'Date', default: new Date() },
+    active: { type: 'boolean', default: true },
+    lastLogin: {
+      date: { type: 'Date', default: new Date() },
+      ip: 'string',
+    },
+    createdAt: {
+      type: 'Date',
+      default: new Date(),
+      readonly: true,
+    },
+    updatedAt: {
+      type: 'Date',
+      default: new Date(),
+      readonly: true,
+    },
+    deleted: { type: 'boolean', default: false },
   },
   {
     index: {
-      findById: {
-        by: 'id',
-        type: 'refdoc',
+      findByUsername: {
+        by: 'username',
       },
       findByDocument: {
-        by: 'person.document',
-      },
-      findByActive: {
-        by: 'is_active',
+        type: 'refdoc',
+        by: 'document',
       },
     },
-  },
+  }
 );
 
-module.exports = UserModel;
+module.exports = userModel;

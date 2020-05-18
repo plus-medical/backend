@@ -4,10 +4,13 @@ const { config: { port } } = require('./config');
 const initialRoutes = require('./routes');
 const { logErrors, wrapErrors, errorHandler } = require('./utils/middlewares/errorHandlers');
 const notFoundHandler = require('./utils/middlewares/notFoundHandler');
+const boolParser = require('express-query-boolean');
 
 const app = express();
 
+// Middlewares
 app.use(express.json());
+app.use(boolParser());
 
 // Routes
 initialRoutes(app);

@@ -1,24 +1,26 @@
-// const debug = require('debug')('app:server');
-// const couchbase = require('couchbase');
-// const ottoman = require('ottoman');
+const debug = require('debug')('app:server');
 
-// const bucketName = 'plus';
-// const password = 'uq*n$7ilhKq202x7lw5nlabs)FmItziRJ]dJ!qUdmql8tfid';
+// Instantiate Couchbase and Ottoman
+const couchbase = require('couchbase');
+const ottoman = require('ottoman');
 
-// const myCluster = new couchbase.Cluster('couchbase://db');
-// const myCluster = new couchbase.Cluster('localhost:8091');
+const {
+  config: { dev, dbPassword, dbUrl, dbName },
+} = require('../config');
 
-// const myBucket = myCluster.openBucket(bucketName, password, (err) => {
-// if (err) {
-// debug(err);
-// } else debug(`${bucketName} bucket open`);
-// });
-// ottoman.bucket.operationTimeout = 120 * 1000;
-// ottoman.store = new ottoman.CbStoreAdapter(myBucket, couchbase);
+// console.log(dbPassword)
 
-// require('./model/person');
-// require('./model/user');
+// Build my cluster object and open a new cluster
+const connectionString =
+  dev !== 'production' ? `${dbUrl}?detailed_errcodes=1` : `${dbUrl}`;
+const myCluster = new couchbase.Cluster(connectionString);
+const myBucket = myCluster.openBucket(dbName, encodeURIComponent(dbPassword));
+ottoman.store = new ottoman.CbStoreAdapter(myBucket, couchbase);
 
-// ottoman.ensureIndices((err) => {
-//   if (err) return debug(err);
-// });
+// Build my "schema" from my model files
+require('./models');
+
+// Build the necessary indexes to function
+ottoman.ensureIndices(function (err) {
+  if (err) return debug(err);
+});
