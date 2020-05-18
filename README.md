@@ -1,40 +1,46 @@
-# Backend
+# Plus Medical [Backend]
+API for plus-medical using docker - express - couchbase
 
-## Install
+## QuickStart with Couchbase Server and Docker
+Here is how to get a single node Couchbase Server cluster running on Docker Compose:
 
-```shell
-npm i
+**Step - 1** : Build the app with docker-compose
+
+```console
+docker-compose -f local.yml build
 ```
 
-Create ***.env*** file using ***.env.example*** as template
+**Step - 2** : Run the app with docker-compose
 
-## Run
-
-development mode
-
-```shell
-npm run dev
+```console
+docker-compose -f local.yml up
 ```
 
-production mode
+**Step - 3** : Next, visit `http://localhost:8091` on the host machine to see the Web Console to start Couchbase Server setup.
 
-```shell
-npm start
+![Web Console to start Couchbase Server setup](.screenshots/web-console.png)
+
+**Step - 4** : Create a new bucket named *plus-medical*.
+
+![Add Bucket](.screenshots/add-bucket.png)
+
+**Step - 5** : Add new user named *plus-medical* with role **Application Access**.
+
+[Add User](.screenshots/add-user.png)
+
+**Step - 6** : Create `.env` file using `.env.example` as template:
+
+```
+DB_PASSWORD=*****
+DB_URL=couchbase://db
+DB_NAME=plus-medical
 ```
 
-## Testing
+**Step - 7** : See the request documentation at 
+[Documentation]().
 
-Run tests
-
-```shell
-npm test
-```
-
-Watch testing coverage
-
-```shell
-npm run cover
-```
+## Testing and coverage
+Test and coverage procedure ...
 
 ## Contributors
 
