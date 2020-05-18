@@ -27,9 +27,12 @@
   "homepage": "https://github.com/plus-medical/backend#readme",
   "dependencies": {
     "@hapi/boom": "9.1.0",
+    "couchbase": "~2.6.10",
     "debug": "4.1.1",
     "dotenv": "8.2.0",
-    "express": "4.17.1"
+    "express": "4.17.1",
+    "express-query-boolean": "^2.0.0",
+    "ottoman": "~1.0.6"
   },
   "devDependencies": {
     "eslint": "6.8.0",

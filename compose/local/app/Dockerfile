@@ -1,6 +1,7 @@
 FROM node:current
 
-COPY ["package.json", "package-lock.json",  "/usr/src/"]
+# COPY ["package.json", "package-lock.json",  "/usr/src/"]
+COPY ["package.json",  "/usr/src/"]
 
 WORKDIR /usr/src
 
@@ -10,4 +11,4 @@ COPY [".", "/usr/src/"]
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
