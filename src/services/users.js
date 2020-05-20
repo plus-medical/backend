@@ -1,34 +1,64 @@
-var ottoman = require('ottoman');
-var db = require('../schema/db');
-const { userModel } = require('../schema/models');
-const debug = require('debug')('app:service');
+const ottoman = require("ottoman");
+const bcrypt = require("bcrypt");
+const sgMail = require("@sendgrid/mail");
+const db = require("../schema/db");
+const { userModel } = require("../schema/models");
+// const debug = require("debug")("app:service");
+const {
+  config: { sendgridApiKey, businessMail },
+} = require("../config");
+const randomString = require("../utils/functions/randomString");
+const welcomeEmail = require("../utils/templates/welcomeEmail");
 
 class UsersService {
   constructor() {
     this.limit = 50;
     this.skip = 0;
+    sgMail.setApiKey(sendgridApiKey);
   }
 
-  createUser({ user }) {
-    return new Promise(function (resolve, reject) {
-      userModel.create(user, function (err, data) {
-        if (err) return reject(err);
-        resolve(data);
-      });
+  async createUser({ user }) {
+    const {
+      name: { first, last },
+      document,
+      email,
+    } = user;
+    const documentString = document.toString(10);
+    const username = `${first.toLowerCase()}.${last.toLowerCase()}.${documentString.substring(
+      documentString.length - 4,
+      documentString.length
+    )}`;
+    const password = randomString(10);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const message = {
+      to: email,
+      from: businessMail,
+      subject: "Welcome to Plus Medical",
+      html: welcomeEmail({ name: first, username, password }),
+    };
+    await sgMail.send(message);
+    return new Promise((resolve, reject) => {
+      userModel.create(
+        { ...user, username, password: hashedPassword },
+        (err, data) => {
+          if (err) return reject(err);
+          resolve(data);
+        }
+      );
     });
   }
 
   getUser(key) {
     return new Promise((resolve, reject) => {
       if (isNaN(key)) {
-        if (key.startsWith('@')) {
+        if (key.startsWith("@")) {
           const username = key.slice(1);
           userModel.findByUsername(username, (err, data) => {
             if (err) return reject(err);
             return resolve(data);
           });
         } else {
-          userModel.getById(key, function (err, data) {
+          userModel.getById(key, (err, data) => {
             if (err) return reject(err);
             return resolve(data);
           });
@@ -61,12 +91,12 @@ class UsersService {
 
   updateUser(id, { user }) {
     return new Promise((resolve, reject) => {
-      userModel.getById(id, function (err, data) {
+      userModel.getById(id, (err, data) => {
         if (err) return reject(err);
-        for (let [key, value] of Object.entries(user)) {
+        for (const [key, value] of Object.entries(user)) {
           data[key] = value;
         }
-        data.save(function (err) {
+        data.save((err) => {
           if (err) return reject(err);
           return resolve(data);
         });
@@ -76,10 +106,10 @@ class UsersService {
 
   deleteUser(id) {
     return new Promise((resolve, reject) => {
-      userModel.getById(id, function (err, data) {
+      userModel.getById(id, (err, data) => {
         if (err) return reject(err);
         data.deleted = true;
-        data.save(function (err) {
+        data.save((err) => {
           if (err) return reject(err);
           return resolve(data);
         });
