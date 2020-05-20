@@ -1,14 +1,15 @@
-const ottoman = require("ottoman");
-const bcrypt = require("bcrypt");
-const sgMail = require("@sendgrid/mail");
-const db = require("../schema/db");
-const { userModel } = require("../schema/models");
-// const debug = require("debug")("app:service");
+const ottoman = require('ottoman');
+const bcrypt = require('bcrypt');
+const sgMail = require('@sendgrid/mail');
+const Boom = require('@hapi/boom');
+// eslint-disable-next-line no-unused-vars
+const db = require('../schema/db');
+const { userModel } = require('../schema/models');
 const {
   config: { sendgridApiKey, businessMail },
-} = require("../config");
-const randomString = require("../utils/functions/randomString");
-const welcomeEmail = require("../utils/templates/welcomeEmail");
+} = require('../config');
+const randomString = require('../utils/functions/randomString');
+const welcomeEmail = require('../utils/templates/welcomeEmail');
 
 class UsersService {
   constructor() {
@@ -17,23 +18,54 @@ class UsersService {
     sgMail.setApiKey(sendgridApiKey);
   }
 
+  async usernameGenerator({ first, last, document }) {
+    const documentString = document.toString(10);
+    let aux = true;
+    let username;
+    do {
+      let digits;
+      if (!username) {
+        digits = documentString.substring(
+          documentString.length - 4,
+          documentString.length,
+        );
+      } else {
+        digits = randomString(4, 'number');
+      }
+      username = `${first.toLowerCase()}.${last.toLowerCase()}.${digits}`;
+      // eslint-disable-next-line no-await-in-loop
+      const usernameAlreadyExists = await this.getUsers({ username });
+      if (usernameAlreadyExists.length === 0) aux = false;
+    } while (aux);
+    return username;
+  }
+
   async createUser({ user }) {
     const {
       name: { first, last },
       document,
       email,
     } = user;
-    const documentString = document.toString(10);
-    const username = `${first.toLowerCase()}.${last.toLowerCase()}.${documentString.substring(
-      documentString.length - 4,
-      documentString.length
-    )}`;
+    const [
+      emailAlreadyExists,
+      documentAlreadyExists,
+    ] = await Promise.all([
+      this.getUsers({ email }),
+      this.getUsers({ document }),
+    ]);
+    if (emailAlreadyExists.length > 0) {
+      throw Boom.conflict('This email already exists');
+    }
+    if (documentAlreadyExists.length > 0) {
+      throw Boom.conflict('This document already exists');
+    }
+    const username = await this.usernameGenerator({ first, last, document });
     const password = randomString(10);
     const hashedPassword = await bcrypt.hash(password, 10);
     const message = {
       to: email,
       from: businessMail,
-      subject: "Welcome to Plus Medical",
+      subject: 'Welcome to Plus Medical',
       html: welcomeEmail({ name: first, username, password }),
     };
     await sgMail.send(message);
@@ -42,8 +74,8 @@ class UsersService {
         { ...user, username, password: hashedPassword },
         (err, data) => {
           if (err) return reject(err);
-          resolve(data);
-        }
+          return resolve(data);
+        },
       );
     });
   }
@@ -51,7 +83,7 @@ class UsersService {
   getUser(key) {
     return new Promise((resolve, reject) => {
       if (isNaN(key)) {
-        if (key.startsWith("@")) {
+        if (key.startsWith('@')) {
           const username = key.slice(1);
           userModel.findByUsername(username, (err, data) => {
             if (err) return reject(err);
