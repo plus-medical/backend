@@ -1,9 +1,11 @@
 const express = require('express');
 const usersRouter = require('./users');
+const authRouter = require('./auth');
 
-const initialRoutes = (app) => {
+const routes = (app) => {
   const router = express.Router();
   app.use('/api/users', usersRouter);
+  app.use('/api/signin', authRouter);
 
   app.use('/api', router);
   router.get('/api', async (req, res) => {
@@ -11,4 +13,4 @@ const initialRoutes = (app) => {
   });
 };
 
-module.exports = initialRoutes;
+module.exports = routes;

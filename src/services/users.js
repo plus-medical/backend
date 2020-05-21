@@ -2,11 +2,12 @@ const ottoman = require('ottoman');
 const bcrypt = require('bcrypt');
 const sgMail = require('@sendgrid/mail');
 const Boom = require('@hapi/boom');
+const jwt = require('jsonwebtoken');
 // eslint-disable-next-line no-unused-vars
 const db = require('../schema/db');
 const { userModel } = require('../schema/models');
 const {
-  config: { sendgridApiKey, businessMail },
+  config: { sendgridApiKey, businessMail, authJwtSecret },
 } = require('../config');
 const randomString = require('../utils/functions/randomString');
 const welcomeEmail = require('../utils/templates/welcomeEmail');
@@ -147,6 +148,21 @@ class UsersService {
         });
       });
     });
+  }
+
+  async signinService({ username, password }) {
+    const usersArray = await this.getUsers({ username });
+    if (usersArray.length === 0) throw Boom.unauthorized();
+    const user = usersArray[0];
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw Boom.unauthorized();
+    const payload = {
+      // eslint-disable-next-line no-underscore-dangle
+      sub: user._id,
+      role: user.role,
+    };
+    const token = jwt.sign(payload, authJwtSecret, { expiresIn: '15m' });
+    return { token };
   }
 }
 
