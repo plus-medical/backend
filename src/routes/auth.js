@@ -16,7 +16,7 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.get('/test', auth, async (req, res, next) => {
+router.get('/test', auth(), async (req, res, next) => {
   console.log('body', req.body);
   console.log('user', req.user);
   try {
