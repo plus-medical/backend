@@ -3,8 +3,9 @@ const jwt = require('jsonwebtoken');
 const { config: { authJwtSecret } } = require('../../config');
 
 const auth = (roles) => (req, res, next) => {
-  if (!req.headers.authorization) throw Boom.unauthorized('Token does not exist');
-  const token = req.headers.authorization.split(' ')[1];
+  const { token } = req.cookies;
+  console.log('token', token);
+  if (!token) throw Boom.unauthorized('Token does not exist');
   let payload;
   try {
     payload = jwt.verify(token, authJwtSecret);

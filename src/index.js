@@ -1,4 +1,6 @@
 const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const debug = require('debug')('app:server');
 const boolParser = require('express-query-boolean');
 const { config: { port } } = require('./config');
@@ -9,6 +11,11 @@ const notFoundHandler = require('./utils/middlewares/notFoundHandler');
 const app = express();
 
 // Middlewares
+app.use(cors({
+  origin: true,
+  credentials: true,
+}));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(boolParser());
