@@ -54,11 +54,11 @@ class UsersService {
       this.getUsers({ email }),
       this.getUsers({ document }),
     ]);
-    if (emailAlreadyExists.length > 0) {
-      throw Boom.conflict('This email already exists');
-    }
     if (documentAlreadyExists.length > 0) {
       throw Boom.conflict('This document already exists');
+    }
+    if (emailAlreadyExists.length > 0) {
+      throw Boom.conflict('This email already exists');
     }
     const username = await this.usernameGenerator({ first, last, document });
     const password = randomString(10);

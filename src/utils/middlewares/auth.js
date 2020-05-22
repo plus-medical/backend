@@ -4,7 +4,6 @@ const { config: { authJwtSecret } } = require('../../config');
 
 const auth = (roles) => (req, res, next) => {
   const { token } = req.cookies;
-  console.log('token', token);
   if (!token) throw Boom.unauthorized('Token does not exist');
   let payload;
   try {
