@@ -5,14 +5,15 @@ const couchbase = require('couchbase');
 const ottoman = require('ottoman');
 
 const {
-  config: { dev, dbPassword, dbUrl, dbName },
+  config: {
+    dev, dbPassword, dbUrl, dbName,
+  },
 } = require('../config');
 
-// console.log(dbPassword)
+// console.log(dbPassword);
 
 // Build my cluster object and open a new cluster
-const connectionString =
-  dev !== 'production' ? `${dbUrl}?detailed_errcodes=1` : `${dbUrl}`;
+const connectionString = dev !== 'production' ? `${dbUrl}?detailed_errcodes=1` : `${dbUrl}`;
 const myCluster = new couchbase.Cluster(connectionString);
 const myBucket = myCluster.openBucket(dbName, encodeURIComponent(dbPassword));
 ottoman.store = new ottoman.CbStoreAdapter(myBucket, couchbase);
@@ -21,6 +22,6 @@ ottoman.store = new ottoman.CbStoreAdapter(myBucket, couchbase);
 require('./models');
 
 // Build the necessary indexes to function
-ottoman.ensureIndices(function (err) {
+ottoman.ensureIndices((err) => {
   if (err) return debug(err);
 });

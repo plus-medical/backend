@@ -1,20 +1,83 @@
-var ottoman = require('ottoman');
-var db = require('../schema/db');
+const ottoman = require('ottoman');
+const bcrypt = require('bcrypt');
+const sgMail = require('@sendgrid/mail');
+const Boom = require('@hapi/boom');
+const jwt = require('jsonwebtoken');
+// eslint-disable-next-line no-unused-vars
+const db = require('../schema/db');
 const { userModel } = require('../schema/models');
-const debug = require('debug')('app:service');
+const {
+  config: { sendgridApiKey, businessMail, authJwtSecret },
+} = require('../config');
+const randomString = require('../utils/functions/randomString');
+const welcomeEmail = require('../utils/templates/welcomeEmail');
 
 class UsersService {
   constructor() {
     this.limit = 50;
     this.skip = 0;
+    sgMail.setApiKey(sendgridApiKey);
   }
 
-  createUser({ user }) {
-    return new Promise(function (resolve, reject) {
-      userModel.create(user, function (err, data) {
-        if (err) return reject(err);
-        resolve(data);
-      });
+  async usernameGenerator({ first, last, document }) {
+    const documentString = document.toString(10);
+    let aux = true;
+    let username;
+    do {
+      let digits;
+      if (!username) {
+        digits = documentString.substring(
+          documentString.length - 4,
+          documentString.length,
+        );
+      } else {
+        digits = randomString(4, 'number');
+      }
+      username = `${first.toLowerCase()}.${last.toLowerCase()}.${digits}`;
+      // eslint-disable-next-line no-await-in-loop
+      const usernameAlreadyExists = await this.getUsers({ username });
+      if (usernameAlreadyExists.length === 0) aux = false;
+    } while (aux);
+    return username;
+  }
+
+  async createUser({ user }) {
+    const {
+      name: { first, last },
+      document,
+      email,
+    } = user;
+    const [
+      emailAlreadyExists,
+      documentAlreadyExists,
+    ] = await Promise.all([
+      this.getUsers({ email }),
+      this.getUsers({ document }),
+    ]);
+    if (documentAlreadyExists.length > 0) {
+      throw Boom.conflict('This document already exists');
+    }
+    if (emailAlreadyExists.length > 0) {
+      throw Boom.conflict('This email already exists');
+    }
+    const username = await this.usernameGenerator({ first, last, document });
+    const password = randomString(10);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const message = {
+      to: email,
+      from: businessMail,
+      subject: 'Welcome to Plus Medical',
+      html: welcomeEmail({ name: first, username, password }),
+    };
+    await sgMail.send(message);
+    return new Promise((resolve, reject) => {
+      userModel.create(
+        { ...user, username, password: hashedPassword },
+        (err, data) => {
+          if (err) return reject(err);
+          return resolve(data);
+        },
+      );
     });
   }
 
@@ -28,7 +91,7 @@ class UsersService {
             return resolve(data);
           });
         } else {
-          userModel.getById(key, function (err, data) {
+          userModel.getById(key, (err, data) => {
             if (err) return reject(err);
             return resolve(data);
           });
@@ -61,12 +124,12 @@ class UsersService {
 
   updateUser(id, { user }) {
     return new Promise((resolve, reject) => {
-      userModel.getById(id, function (err, data) {
+      userModel.getById(id, (err, data) => {
         if (err) return reject(err);
-        for (let [key, value] of Object.entries(user)) {
+        for (const [key, value] of Object.entries(user)) {
           data[key] = value;
         }
-        data.save(function (err) {
+        data.save((err) => {
           if (err) return reject(err);
           return resolve(data);
         });
@@ -76,15 +139,30 @@ class UsersService {
 
   deleteUser(id) {
     return new Promise((resolve, reject) => {
-      userModel.getById(id, function (err, data) {
+      userModel.getById(id, (err, data) => {
         if (err) return reject(err);
         data.deleted = true;
-        data.save(function (err) {
+        data.save((err) => {
           if (err) return reject(err);
           return resolve(data);
         });
       });
     });
+  }
+
+  async signinService({ username, password }) {
+    const usersArray = await this.getUsers({ username });
+    if (usersArray.length === 0) throw Boom.unauthorized();
+    const user = usersArray[0];
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw Boom.unauthorized();
+    const payload = {
+      // eslint-disable-next-line no-underscore-dangle
+      sub: user._id,
+      role: user.role,
+    };
+    const token = jwt.sign(payload, authJwtSecret, { expiresIn: '15m' });
+    return { token };
   }
 }
 

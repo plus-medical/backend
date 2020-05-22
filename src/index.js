@@ -1,19 +1,27 @@
 const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const debug = require('debug')('app:server');
+const boolParser = require('express-query-boolean');
 const { config: { port } } = require('./config');
-const initialRoutes = require('./routes');
+const routes = require('./routes');
 const { logErrors, wrapErrors, errorHandler } = require('./utils/middlewares/errorHandlers');
 const notFoundHandler = require('./utils/middlewares/notFoundHandler');
-const boolParser = require('express-query-boolean');
 
 const app = express();
 
 // Middlewares
+app.use(cors({
+  origin: true,
+  credentials: true,
+}));
+app.use(cookieParser());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(boolParser());
 
 // Routes
-initialRoutes(app);
+routes(app);
 
 // Catch 404
 app.use(notFoundHandler);
