@@ -3,12 +3,14 @@ const UsersService = require('../services/users');
 const auth = require('../utils/middlewares/auth');
 const { config } = require('../config');
 const { nextMonth } = require('../utils/dates');
+const validationHandler = require('../utils/middlewares/validationHandler');
+const { signinSchema } = require('../utils/validationSchemas/users');
 
 const usersService = new UsersService();
 
 const router = express.Router();
 
-router.post('/', async (req, res, next) => {
+router.post('/', validationHandler(signinSchema), async (req, res, next) => {
   const { body: credentials } = req;
   try {
     const { token } = await usersService.signinService(credentials);
