@@ -162,7 +162,14 @@ class UsersService {
       role: user.role,
     };
     const token = jwt.sign(payload, authJwtSecret, { expiresIn: '15m' });
-    return { token };
+    return {
+      token,
+      user: {
+        name: user.name,
+        username: user.username,
+        role: user.role,
+      },
+    };
   }
 }
 

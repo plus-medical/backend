@@ -13,12 +13,12 @@ const router = express.Router();
 router.post('/', validationHandler(signinSchema), async (req, res, next) => {
   const { body: credentials } = req;
   try {
-    const { token } = await usersService.signinService(credentials);
+    const { token, user } = await usersService.signinService(credentials);
     res.cookie('token', token, {
       httpOnly: !config.dev,
       secure: !config.dev,
       expires: nextMonth(),
-    }).status(200).json({ message: 'Successfully authenticated' });
+    }).status(200).json({ data: { user }, message: 'Successfully authenticated' });
   } catch (err) {
     next(err);
   }
