@@ -10,7 +10,7 @@ const usersService = new UsersService();
 
 const router = express.Router();
 
-router.post('/', validationHandler(signinSchema), async (req, res, next) => {
+router.post('/signin', validationHandler(signinSchema), async (req, res, next) => {
   const { body: credentials } = req;
   try {
     const { token, user } = await usersService.signinService(credentials);
@@ -22,6 +22,10 @@ router.post('/', validationHandler(signinSchema), async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+router.post('/logout', (req, res) => {
+  res.clearCookie('token').status(200).json({ message: 'Session finished' });
 });
 
 router.get('/test', auth(), async (req, res, next) => {

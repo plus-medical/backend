@@ -5,7 +5,7 @@ const authRouter = require('./auth');
 const routes = (app) => {
   const router = express.Router();
   app.use('/api/users', usersRouter);
-  app.use('/api/signin', authRouter);
+  app.use('/api', authRouter);
 
   app.use('/api', router);
   router.get('/api', async (req, res) => {
