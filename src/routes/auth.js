@@ -1,7 +1,7 @@
 const express = require('express');
 const UsersService = require('../services/users');
 const auth = require('../utils/middlewares/auth');
-const { config } = require('../config');
+// const { config } = require('../config');
 const { nextMonth } = require('../utils/dates');
 const validationHandler = require('../utils/middlewares/validationHandler');
 const { signinSchema } = require('../utils/validationSchemas/users');
@@ -15,8 +15,8 @@ router.post('/', validationHandler(signinSchema), async (req, res, next) => {
   try {
     const { token, user } = await usersService.signinService(credentials);
     res.cookie('token', token, {
-      httpOnly: !config.dev,
-      secure: !config.dev,
+      httpOnly: true,
+      secure: true,
       expires: nextMonth(),
     }).status(200).json({ data: { user }, message: 'Successfully authenticated' });
   } catch (err) {

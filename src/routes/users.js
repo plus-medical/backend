@@ -4,10 +4,11 @@ const router = express.Router();
 const UsersService = require('../services/users');
 const validationHandler = require('../utils/middlewares/validationHandler');
 const { createUserSchema } = require('../utils/validationSchemas/users');
+const auth = require('../utils/middlewares/auth');
 
 const userService = new UsersService();
 
-router.get('/', async (req, res, next) => {
+router.get('/', auth('administrator'), async (req, res, next) => {
   const { query } = req;
   try {
     const users = await userService.getUsers(query);
