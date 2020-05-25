@@ -1,6 +1,6 @@
 const express = require('express');
+const fs = require('fs');
 const UsersService = require('../services/users');
-const auth = require('../utils/middlewares/auth');
 const { config } = require('../config');
 const { nextMonth } = require('../utils/dates');
 const validationHandler = require('../utils/middlewares/validationHandler');
@@ -35,9 +35,16 @@ router.post('/logout', (req, res) => {
   res.clearCookie('token').status(200).json({ message: 'Session finished' });
 });
 
-router.get('/test', auth(), async (req, res, next) => {
+router.post('/test', async (req, res, next) => {
+  fs.readFile(req.file.path, { encoding: 'utf-8' }, (err, data) => {
+    if (!err) {
+      console.log(data);
+    } else {
+      console.log('error to read');
+    }
+  });
   try {
-    res.status(200).json({ message: 'Hello from singin test' });
+    res.status(200).json({ message: 'File uploaded!' });
   } catch (err) {
     next();
   }

@@ -1,8 +1,10 @@
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const debug = require('debug')('app:server');
 const boolParser = require('express-query-boolean');
+const multer = require('multer');
 const { config: { port } } = require('./config');
 const routes = require('./routes');
 const { logErrors, wrapErrors, errorHandler } = require('./utils/middlewares/errorHandlers');
@@ -16,6 +18,9 @@ app.use(cors({
   credentials: true,
 }));
 app.use(cookieParser());
+app.use(multer({
+  dest: path.join(__dirname, 'uploads'),
+}).single('file'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(boolParser());
