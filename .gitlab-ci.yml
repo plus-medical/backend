@@ -8,6 +8,9 @@ variables:
   # volume mount in `config.toml`.
   DOCKER_TLS_CERTDIR: "/certs"
 
+services:
+    - docker:19.03.0-dind
+
 before_script:
   - docker info
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
