@@ -1,10 +1,10 @@
 const express = require('express');
-const fs = require('fs');
 const UsersService = require('../services/users');
 const { config } = require('../config');
 const { nextMonth } = require('../utils/dates');
 const validationHandler = require('../utils/middlewares/validationHandler');
 const { signinSchema } = require('../utils/validationSchemas/users');
+const parseUsersFile = require('../utils/functions/parseUsersFile');
 
 const usersService = new UsersService();
 
@@ -36,14 +36,9 @@ router.post('/logout', (req, res) => {
 });
 
 router.post('/test', async (req, res, next) => {
-  fs.readFile(req.file.path, { encoding: 'utf-8' }, (err, data) => {
-    if (!err) {
-      console.log(data);
-    } else {
-      console.log('error to read');
-    }
-  });
   try {
+    const users = await parseUsersFile(req.file);
+    console.log(users[0]);
     res.status(200).json({ message: 'File uploaded!' });
   } catch (err) {
     next();
