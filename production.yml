@@ -8,19 +8,40 @@ services:
     build:
       context: .
       dockerfile: ./compose/local/app/Dockerfile
-    image: backend_local_app
+    image: '${CI_REGISTRY_IMAGE}/backend_local_app:latest'
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.plus-medical-app-http.rule=Host(`app.plus-medical.co`)
+        - traefik.http.routers.plus-medical-app-http.entrypoints=http
+        - traefik.http.routers.plus-medical-app-http.middlewares=plus-medical-https-redirect
+        - traefik.http.routers.plus-medical-app-https.rule=Host(`app.plus-medical.co`)
+        - traefik.http.routers.plus-medical-app-https.entrypoints=https
+        - traefik.http.routers.plus-medical-app-https.tls=true
+        - traefik.http.routers.plus-medical-app-https.tls.certresolver=le
+        - traefik.http.services.plus-medical-app.loadbalancer.server.port=3000
     depends_on:
       - db
-    ports:
-      - '3000:3000'
     volumes:
       - .:/usr/src
       - /usr/src/node_modules
 
   db:
     image: couchbase:enterprise-6.5.1
-    ports:
-      - '8091-8094:8091-8094'
-      - '11210:11210'
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.plus-medical-db-http.rule=Host(`db.plus-medical.co`)
+        - traefik.http.routers.plus-medical-db-http.entrypoints=http
+        - traefik.http.routers.plus-medical-db-http.middlewares=plus-medical-https-redirect
+        - traefik.http.routers.plus-medical-db-https.rule=Host(`db.plus-medical.co`)
+        - traefik.http.routers.plus-medical-db-https.entrypoints=https
+        - traefik.http.routers.plus-medical-db-https.tls=true
+        - traefik.http.routers.plus-medical-db-https.tls.certresolver=le
+        - traefik.http.services.plus-medical-db.loadbalancer.server.port=8091
     volumes:
       - local_couchbase_data:/opt/couchbase/var/lib/couchbase
