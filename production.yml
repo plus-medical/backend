@@ -47,6 +47,6 @@ services:
     volumes:
       - local_couchbase_data:/opt/couchbase/var/lib/couchbase
     
-    networks:
-      traefik-public:
-        external: true
+networks:
+  traefik-public:
+    external: true
