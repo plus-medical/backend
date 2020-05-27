@@ -4,7 +4,7 @@ const { config } = require('../config');
 const { nextMonth } = require('../utils/dates');
 const validationHandler = require('../utils/middlewares/validationHandler');
 const { signinSchema } = require('../utils/validationSchemas/users');
-const parseUsersFile = require('../utils/functions/parseUsersFile');
+const readFile = require('../utils/functions/readFile');
 
 const usersService = new UsersService();
 
@@ -37,8 +37,8 @@ router.post('/logout', (req, res) => {
 
 router.post('/test', async (req, res, next) => {
   try {
-    const users = await parseUsersFile(req.file);
-    console.log(users[0]);
+    const users = await readFile(req.file.path);
+    console.log(users);
     res.status(200).json({ message: 'File uploaded!' });
   } catch (err) {
     next();
