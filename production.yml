@@ -1,4 +1,4 @@
-version: '3'
+version: '3.3'
 
 volumes:
   local_couchbase_data: {}
@@ -48,6 +48,5 @@ services:
       - local_couchbase_data:/opt/couchbase/var/lib/couchbase
     
     networks:
-      default:
-        external:
-          name: traefik-public
+      traefik-public:
+        external: true
