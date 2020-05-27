@@ -1,7 +1,11 @@
 image: tiangolo/docker-with-compose
 
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 stages:
   - build
@@ -20,8 +24,9 @@ build-prod:
 deploy-prod:
   stage: deploy
   script:
-    - docker stack deploy -c production.yml --with-registry-auth backend
+    - docker info
+    - docker stack deploy -c production.yml --with-registry-auth plus-medical  #plus-medical is stack name 
   only:
-    - master
+    - develop
   tags:
     - build

@@ -1,26 +1,52 @@
-version: '3'
+version: '3.3'
 
 volumes:
   local_couchbase_data: {}
 
 services:
-  app:
+  api:
     build:
       context: .
-      dockerfile: ./compose/local/app/Dockerfile
-    image: backend_local_app
+      dockerfile: ./compose/local/api/Dockerfile
+    image: '${CI_REGISTRY_IMAGE}/backend_local_api:latest'
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.middlewares.plus-medical-https-redirect.redirectscheme.scheme=https
+        - traefik.http.middlewares.plus-medical-https-redirect.redirectscheme.permanent=true
+        - traefik.http.routers.plus-medical-api-https.rule=Host(`plus-medical.co`) 
+        - traefik.http.routers.plus-medical-api-https.entrypoints=https
+        - traefik.http.routers.plus-medical-api-https.tls=true
+        - traefik.http.routers.plus-medical-api-https.tls.certresolver=le
+        - traefik.http.services.plus-medical-api.loadbalancer.server.port=3000
+      
     depends_on:
       - db
-    ports:
-      - '3000:3000'
     volumes:
       - .:/usr/src
       - /usr/src/node_modules
 
   db:
     image: couchbase:enterprise-6.5.1
-    ports:
-      - '8091-8094:8091-8094'
-      - '11210:11210'
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.plus-medical-db-http.rule=Host(`db.plus-medical.co`)
+        - traefik.http.routers.plus-medical-db-http.entrypoints=http
+        - traefik.http.routers.plus-medical-db-http.middlewares=plus-medical-https-redirect
+        - traefik.http.routers.plus-medical-db-https.rule=Host(`db.plus-medical.co`)
+        - traefik.http.routers.plus-medical-db-https.entrypoints=https
+        - traefik.http.routers.plus-medical-db-https.tls=true
+        - traefik.http.routers.plus-medical-db-https.tls.certresolver=le
+        - traefik.http.services.plus-medical-db.loadbalancer.server.port=8091
+
     volumes:
       - local_couchbase_data:/opt/couchbase/var/lib/couchbase
+    
+networks:
+  traefik-public:
+    external: true
