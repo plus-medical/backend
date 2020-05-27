@@ -4,11 +4,11 @@ volumes:
   local_couchbase_data: {}
 
 services:
-  app:
+  api:
     build:
       context: .
-      dockerfile: ./compose/local/app/Dockerfile
-    image: backend_local_app
+      dockerfile: ./compose/local/api/Dockerfile
+    image: backend_local_api
     depends_on:
       - db
     ports:
