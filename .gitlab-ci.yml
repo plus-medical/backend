@@ -14,7 +14,6 @@ services:
 before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
-
 stages:
   - build
   - deploy
@@ -32,7 +31,8 @@ build-prod:
 deploy-prod:
   stage: deploy
   script:
-    - docker stack deploy -c production.yml --with-registry-auth backend
+    - docker info
+    - docker stack deploy -c production.yml --with-registry-auth plus-medical  #plus-medical is stack name 
   only:
     - develop
   tags:
