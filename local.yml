@@ -11,6 +11,12 @@ services:
     image: backend_local_api
     depends_on:
       - db
+    command: 
+      - /bin/sh
+      - -c
+      - |
+        echo "sleep for 60sec"
+        sleep 60 
     ports:
       - '3000:3000'
     volumes:
