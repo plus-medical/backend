@@ -8,7 +8,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/api/Dockerfile
-    image: '${CI_REGISTRY_IMAGE}/backend_local_api:latest'
+    image: '${CI_REGISTRY_IMAGE}/backend_production_api:latest'
     networks:
       - traefik-public
       - default
@@ -28,13 +28,7 @@ services:
         - traefik.http.routers.plus-medical-api-https.tls.certresolver=le
         - traefik.http.services.plus-medical-api.loadbalancer.server.port=3000
     depends_on:
-      - db
-    command:
-      - /bin/sh
-      - -c
-      - |
-        echo "sleep for 20sec"
-        sleep 20
+      - wait
     volumes:
       - .:/usr/src
       - /usr/src/node_modules
@@ -62,7 +56,16 @@ services:
 
     volumes:
       - local_couchbase_data:/opt/couchbase/var/lib/couchbase
-
+      
+  wait:
+    build:
+      context: .
+      dockerfile: ./compose/production/wait/Dockerfile
+    image: backend_production_wait
+    depends_on:
+      - db
+    
+    
 networks:
   traefik-public:
     external: true
