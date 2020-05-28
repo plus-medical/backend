@@ -7,15 +7,17 @@ services:
   api:
     build:
       context: .
-      dockerfile: ./compose/local/api/Dockerfile
+      dockerfile: ./compose/production/api/Dockerfile
     image: '${CI_REGISTRY_IMAGE}/backend_local_api:latest'
+    environment:
+      - DB_PASSWORD=qscwdv
+      - DB_URL=couchbase://db 
+      - DB_NAME=plus-medical
     deploy:
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - traefik.http.middlewares.plus-medical-https-redirect.redirectscheme.scheme=https
-        - traefik.http.middlewares.plus-medical-https-redirect.redirectscheme.permanent=true
         - traefik.http.routers.plus-medical-api-https.rule=Host(`plus-medical.co`) 
         - traefik.http.routers.plus-medical-api-https.entrypoints=https
         - traefik.http.routers.plus-medical-api-https.tls=true
