@@ -13,12 +13,12 @@ services:
       - traefik-public
       - default
     environment:
-      - DB_PASSWORD='${CI_DB_PASSWORD}'
-      - DB_URL='${CI_DB_URL}'
-      - DB_NAME='${CI_DB_NAME}'
-      - BUSINESS_MAIL='${CI_BUSINESS_MAIL}'
-      - SENDGRID_API_KEY='${CI_SENDGRID_API_KEY}'
-      - AUTH_JWT_SECRET='${CI_AUTH_JWT_SECRET}'
+      - DB_PASSWORD='${DB_PASSWORD}'
+      - DB_URL='${DB_URL}'
+      - DB_NAME='${DB_NAME}'
+      - BUSINESS_MAIL='${BUSINESS_MAIL}'
+      - SENDGRID_API_KEY='${SENDGRID_API_KEY}'
+      - AUTH_JWT_SECRET='${AUTH_JWT_SECRET}'
     deploy:
       labels:
         - traefik.enable=true
