@@ -9,6 +9,9 @@ services:
       context: .
       dockerfile: ./compose/production/api/Dockerfile
     image: '${CI_REGISTRY_IMAGE}/backend_local_api:latest'
+    networks:
+      - traefik-public
+      - default
     environment:
       - DB_PASSWORD=qscwdv
       - DB_URL=couchbase://db 
@@ -32,6 +35,9 @@ services:
 
   db:
     image: couchbase:enterprise-6.5.1
+    networks:
+      - traefik-public
+      - default
     deploy:
       labels:
         - traefik.enable=true
