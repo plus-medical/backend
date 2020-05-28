@@ -12,13 +12,6 @@ services:
     networks:
       - traefik-public
       - default
-    environment:
-      - DB_PASSWORD='${DB_PASSWORD}'
-      - DB_URL='${DB_URL}'
-      - DB_NAME='${DB_NAME}'
-      - BUSINESS_MAIL='${BUSINESS_MAIL}'
-      - SENDGRID_API_KEY='${SENDGRID_API_KEY}'
-      - AUTH_JWT_SECRET='${AUTH_JWT_SECRET}'
     deploy:
       labels:
         - traefik.enable=true
