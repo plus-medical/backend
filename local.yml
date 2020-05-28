@@ -15,8 +15,8 @@ services:
       - /bin/sh
       - -c
       - |
-        echo "sleep for 60sec"
-        sleep 60 
+        echo "sleep for 20sec"
+        sleep 20
     ports:
       - '3000:3000'
     volumes:

@@ -33,8 +33,8 @@ services:
       - /bin/sh
       - -c
       - |
-        echo "sleep for 60sec"
-        sleep 60
+        echo "sleep for 20sec"
+        sleep 20
     volumes:
       - .:/usr/src
       - /usr/src/node_modules
