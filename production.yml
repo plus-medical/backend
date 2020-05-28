@@ -24,7 +24,12 @@ services:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - traefik.http.routers.plus-medical-api-https.rule=Host(`plus-medical.co`) 
+        - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+        - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+        - traefik.http.routers.plus-medical-api-http.rule=Host(`api.plus-medical.co`)
+        - traefik.http.routers.plus-medical-api-http.entrypoints=http
+        - traefik.http.routers.plus-medical-api-http.middlewares=plus-medical-https-redirect
+        - traefik.http.routers.plus-medical-api-https.rule=Host(`api.plus-medical.co`)
         - traefik.http.routers.plus-medical-api-https.entrypoints=https
         - traefik.http.routers.plus-medical-api-https.tls=true
         - traefik.http.routers.plus-medical-api-https.tls.certresolver=le
@@ -46,6 +51,8 @@ services:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
+        - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+        - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
         - traefik.http.routers.plus-medical-db-http.rule=Host(`db.plus-medical.co`)
         - traefik.http.routers.plus-medical-db-http.entrypoints=http
         - traefik.http.routers.plus-medical-db-http.middlewares=plus-medical-https-redirect
