@@ -1,7 +1,14 @@
 const ottoman = require('ottoman');
 const Boom = require('@hapi/boom');
+const bcrypt = require('bcrypt');
+
 const promise2asyncAwait = require('../utils/functions/promise2asyncAwait');
-const userModel = require('../schema/models/user');
+const userModel = require('..');
+const randomString = require('../utils/functions/randomString');
+const sendMail = require('../utils/sendMail');
+const welcomeEmail = require('../utils/templates/welcomeEmail');
+
+const { config } = require('../config');
 
 class UsersService {
   constructor() {
@@ -10,19 +17,19 @@ class UsersService {
     this.skip = 0;
   }
 
-  getUserById(id) {
+  async getUserById(id) {
     return promise2asyncAwait(id, this.model.getById);
   }
 
-  getUserByUsername(username) {
+  async getUserByUsername(username) {
     return promise2asyncAwait(username, this.model.findByUsername);
   }
 
-  getUserByDocument(document) {
+  async getUserByDocument(document) {
     return promise2asyncAwait(document, this.model.findByDocument);
   }
 
-  getUser(key) {
+  async getUser(key) {
     if (isNaN(key)) {
       if (key.startsWith('@')) {
         const username = key.slice(1);
@@ -33,7 +40,7 @@ class UsersService {
     return this.getUserByDocument(key);
   }
 
-  getUsers(query) {
+  async getUsers(query) {
     const filter = { ...query, deleted: false };
     const limit = filter.limit || this.limit;
     delete filter.limit;
@@ -43,6 +50,28 @@ class UsersService {
     const options = { limit, skip, consistency: ottoman.Consistency.LOCAL };
 
     return promise2asyncAwait(filter, this.model.find, options);
+  }
+
+  async usernameGenerator({ first, last, document }) {
+    const documentString = document.toString(10);
+    let aux = true;
+    let username;
+    do {
+      let digits;
+      if (!username) {
+        digits = documentString.substring(
+          documentString.length - 4,
+          documentString.length,
+        );
+      } else {
+        digits = randomString(4, 'number');
+      }
+      username = `${first.toLowerCase()}.${last.toLowerCase()}.${digits}`;
+      // eslint-disable-next-line no-await-in-loop
+      const usernameAlreadyExists = await this.getUserByUsername(username);
+      if (usernameAlreadyExists.length === 0) aux = false;
+    } while (aux);
+    return username;
   }
 
   async createUser({ user }) {
@@ -62,24 +91,12 @@ class UsersService {
       throw Boom.conflict('This email already exists');
     }
     const username = await this.usernameGenerator({ first, last, document });
-    const password = dev ? '12345' : randomString(10);
+    const password = config.dev ? '12345' : randomString(10);
     const hashedPassword = await bcrypt.hash(password, 10);
-    const message = {
-      to: email,
-      from: businessMail,
-      subject: 'Welcome to Plus Medical',
-      html: welcomeEmail({ name: first, username, password }),
-    };
-    await sgMail.send(message);
-    return new Promise((resolve, reject) => {
-      userModel.create(
-        { ...user, username, password: hashedPassword },
-        (err, data) => {
-          if (err) return reject(err);
-          return resolve(data);
-        },
-      );
-    });
+
+    await sendMail(email, 'Welcome to Plus Medical', welcomeEmail({ name: first, username, password }));
+
+    return promise2asyncAwait({ ...user, username, password: hashedPassword }, this.model.create);
   }
 }
 
