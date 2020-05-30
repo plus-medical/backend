@@ -24,3 +24,6 @@ services:
       - '11210:11210'
     volumes:
       - local_couchbase_data:/opt/couchbase/var/lib/couchbase
+
+        
+    

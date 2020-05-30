@@ -40,7 +40,7 @@ services:
     volumes:
       - .:/usr/src
       - /usr/src/node_modules
-  
+
   db:
     image: couchbase:enterprise-6.5.1
     networks:
@@ -63,7 +63,6 @@ services:
         - traefik.http.services.plus-medical-db.loadbalancer.server.port=8091
     volumes:
       - local_couchbase_data:/opt/couchbase/var/lib/couchbase
-
 networks:
   traefik-public:
     external: true

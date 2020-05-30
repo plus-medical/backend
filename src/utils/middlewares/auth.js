@@ -1,6 +1,8 @@
 const Boom = require('@hapi/boom');
 const jwt = require('jsonwebtoken');
-const { config: { authJwtSecret } } = require('../../config');
+const {
+  config: { authJwtSecret },
+} = require('../../config');
 
 const auth = (roles) => (req, res, next) => {
   const { token } = req.cookies;

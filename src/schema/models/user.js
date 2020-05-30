@@ -1,6 +1,7 @@
 const ottoman = require('ottoman');
 const { phoneValidator, roleValidator } = require('../../utils/validators');
-var userModel = ottoman.model(
+
+const userModel = ottoman.model(
   'User',
   {
     username: 'string',
@@ -25,6 +26,15 @@ var userModel = ottoman.model(
     phone: { type: 'string', validator: phoneValidator },
     photo: 'string',
     active: { type: 'boolean', default: true },
+
+    insuranceCarrier: 'string',
+    bondingType: 'string',
+    maritalStatus: 'string',
+
+    speciality: 'string',
+
+    laboratory: 'Laboratory',
+
     lastLogin: {
       date: { type: 'Date', default: new Date() },
       ip: 'string',
@@ -51,7 +61,7 @@ var userModel = ottoman.model(
         by: 'document',
       },
     },
-  }
+  },
 );
 
 module.exports = userModel;
