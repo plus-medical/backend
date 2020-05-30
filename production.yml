@@ -9,6 +9,14 @@ services:
       context: .
       dockerfile: ./compose/production/api/Dockerfile
     image: '${CI_REGISTRY_IMAGE}/backend_local_api:latest'
+    environment:
+      - MDB_NAME=platzi-store
+      - DB_PASSWORD='${DB_PASSWORD}'
+      - DB_URL=couchbase://db
+      - DB_NAME=plus-medical
+      - BUSINESS_MAIL='${BUSINESS_MAIL}'
+      - SENDGRID_API_KEY='${SENDGRID_API_KEY}'
+      - AUTH_JWT_SECRET='${AUTH_JWT_SECRET}'
     networks:
       - traefik-public
       - default
@@ -27,13 +35,12 @@ services:
         - traefik.http.routers.plus-medical-api-https.tls=true
         - traefik.http.routers.plus-medical-api-https.tls.certresolver=le
         - traefik.http.services.plus-medical-api.loadbalancer.server.port=3000
-      
     depends_on:
       - db
     volumes:
       - .:/usr/src
       - /usr/src/node_modules
-
+  
   db:
     image: couchbase:enterprise-6.5.1
     networks:
@@ -54,10 +61,9 @@ services:
         - traefik.http.routers.plus-medical-db-https.tls=true
         - traefik.http.routers.plus-medical-db-https.tls.certresolver=le
         - traefik.http.services.plus-medical-db.loadbalancer.server.port=8091
-
     volumes:
       - local_couchbase_data:/opt/couchbase/var/lib/couchbase
-    
+
 networks:
   traefik-public:
     external: true
