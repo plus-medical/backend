@@ -37,6 +37,7 @@ services:
         - traefik.http.services.plus-medical-api.loadbalancer.server.port=3000
     depends_on:
       - db
+    command: ['.scripts/wait.sh', 'db:8091', '--', 'npm', 'start']
     volumes:
       - .:/usr/src
       - /usr/src/node_modules

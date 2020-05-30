@@ -11,6 +11,7 @@ services:
     image: backend_local_api
     depends_on:
       - db
+    command: ['.scripts/wait.sh', 'db:8091', '--', 'npm', 'run', 'dev']
     ports:
       - '3000:3000'
     volumes:
@@ -24,6 +25,3 @@ services:
       - '11210:11210'
     volumes:
       - local_couchbase_data:/opt/couchbase/var/lib/couchbase
-
-        
-    
