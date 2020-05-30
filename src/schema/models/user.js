@@ -33,8 +33,6 @@ const userModel = ottoman.model(
 
     speciality: 'string',
 
-    laboratory: 'Laboratory',
-
     lastLogin: {
       date: { type: 'Date', default: new Date() },
       ip: 'string',
