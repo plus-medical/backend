@@ -10,7 +10,7 @@ services:
       dockerfile: ./compose/local/api/Dockerfile
     image: backend_local_api
     depends_on:
-      - wait
+      - db
     ports:
       - '3000:3000'
     volumes:
@@ -24,14 +24,6 @@ services:
       - '11210:11210'
     volumes:
       - local_couchbase_data:/opt/couchbase/var/lib/couchbase
-      
-  wait:
-    build:
-      context: .
-      dockerfile: ./compose/local/wait/Dockerfile
-    image: backend_local_wait
-    depends_on:
-      - db
 
         
     
