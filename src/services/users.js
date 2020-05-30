@@ -7,7 +7,9 @@ const jwt = require('jsonwebtoken');
 const db = require('../schema/db');
 const { userModel } = require('../schema/models');
 const {
-  config: { sendgridApiKey, businessMail, authJwtSecret },
+  config: {
+    sendgridApiKey, businessMail, authJwtSecret, dev,
+  },
 } = require('../config');
 const randomString = require('../utils/functions/randomString');
 const welcomeEmail = require('../utils/templates/welcomeEmail');
@@ -61,7 +63,7 @@ class UsersService {
       throw Boom.conflict('This email already exists');
     }
     const username = await this.usernameGenerator({ first, last, document });
-    const password = randomString(10);
+    const password = dev ? '12345' : randomString(10);
     const hashedPassword = await bcrypt.hash(password, 10);
     const message = {
       to: email,
@@ -161,7 +163,7 @@ class UsersService {
       sub: user._id,
       role: user.role,
     };
-    const token = jwt.sign(payload, authJwtSecret, { expiresIn: '15m' });
+    const token = jwt.sign(payload, authJwtSecret, { expiresIn: '60m' });
     return {
       token,
       user: {

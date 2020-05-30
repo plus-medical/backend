@@ -13,6 +13,11 @@ stages:
 
 build-prod:
   stage: build
+  variables:
+    DB_PASSWORD: $DB_PASSWORD
+    BUSINESS_MAIL: $BUSINESS_MAIL
+    SENDGRID_API_KEY: $SENDGRID_API_KEY
+    AUTH_JWT_SECRET: $AUTH_JWT_SECRET
   script:
     - docker-compose -f production.yml build
     - docker-compose -f production.yml push
