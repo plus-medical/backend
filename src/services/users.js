@@ -1,9 +1,13 @@
+const ottoman = require('ottoman');
+const Boom = require('@hapi/boom');
 const promise2asyncAwait = require('../utils/functions/promise2asyncAwait');
 const userModel = require('../schema/models/user');
 
 class UsersService {
   constructor() {
     this.model = userModel;
+    this.limit = 50;
+    this.skip = 0;
   }
 
   getUserById(id) {
@@ -27,6 +31,55 @@ class UsersService {
       return this.getUserById(key);
     }
     return this.getUserByDocument(key);
+  }
+
+  getUsers(query) {
+    const filter = { ...query, deleted: false };
+    const limit = filter.limit || this.limit;
+    delete filter.limit;
+    const skip = filter.skip || this.skip;
+    delete filter.skip;
+
+    const options = { limit, skip, consistency: ottoman.Consistency.LOCAL };
+
+    return promise2asyncAwait(filter, this.model.find, options);
+  }
+
+  async createUser({ user }) {
+    const {
+      name: { first, last },
+      document,
+      email,
+    } = user;
+    const [emailAlreadyExists, documentAlreadyExists] = await Promise.all([
+      this.getUsers({ email }),
+      this.getUsers({ document }),
+    ]);
+    if (documentAlreadyExists.length > 0) {
+      throw Boom.conflict('This document already exists');
+    }
+    if (emailAlreadyExists.length > 0) {
+      throw Boom.conflict('This email already exists');
+    }
+    const username = await this.usernameGenerator({ first, last, document });
+    const password = dev ? '12345' : randomString(10);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const message = {
+      to: email,
+      from: businessMail,
+      subject: 'Welcome to Plus Medical',
+      html: welcomeEmail({ name: first, username, password }),
+    };
+    await sgMail.send(message);
+    return new Promise((resolve, reject) => {
+      userModel.create(
+        { ...user, username, password: hashedPassword },
+        (err, data) => {
+          if (err) return reject(err);
+          return resolve(data);
+        },
+      );
+    });
   }
 }
 

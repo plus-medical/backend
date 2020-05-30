@@ -1,6 +1,7 @@
-function promise2asyncAwait(value, cb) {
+function promise2asyncAwait(value, cb, options = null) {
   return new Promise((resolve, reject) => {
-    cb(value, (error, result) => {
+    cb(value, options, (error, result) => {
+      console.log('result: ', result);
       if (error) reject(error);
       else resolve(result);
     });

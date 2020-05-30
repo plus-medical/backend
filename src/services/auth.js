@@ -1,4 +1,3 @@
-const debug = require('debug')('app:auth');
 const Boom = require('@hapi/boom');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -16,7 +15,6 @@ class AuthService {
 
   async signIn({ username, password }) {
     const key = { username };
-
     const usersArray = await this.users.getUserByUsername(key.username);
     if (usersArray.length === 0) throw Boom.unauthorized();
     const user = usersArray[0];

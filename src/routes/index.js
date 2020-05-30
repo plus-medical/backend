@@ -4,8 +4,8 @@ const authRouter = require('./auth');
 
 const routes = (app) => {
   const router = express.Router();
-  app.use('/users', usersRouter);
   app.use('/', authRouter);
+  app.use('/users', usersRouter);
 
   app.use('/', router);
   router.get('/', async (req, res) => {
