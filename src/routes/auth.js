@@ -1,12 +1,12 @@
 const express = require('express');
-const UsersService = require('../services/users');
+const AuthService = require('../services/auth');
 const { config } = require('../config');
 const { nextMonth } = require('../utils/dates');
 const validationHandler = require('../utils/middlewares/validationHandler');
 const { signinSchema } = require('../utils/validationSchemas/users');
-const readFile = require('../utils/functions/readFile');
+// const readFile = require('../utils/functions/readFile');
 
-const usersService = new UsersService();
+const authService = new AuthService();
 
 const router = express.Router();
 
@@ -16,7 +16,7 @@ router.post(
   async (req, res, next) => {
     const { body: credentials } = req;
     try {
-      const { token, user } = await usersService.signinService(credentials);
+      const { token, user } = await authService.signIn(credentials);
       res
         .cookie('token', token, {
           httpOnly: !config.dev,
@@ -35,14 +35,14 @@ router.post('/logout', (req, res) => {
   res.clearCookie('token').status(200).json({ message: 'Session finished' });
 });
 
-router.post('/test', async (req, res, next) => {
-  try {
-    const users = await readFile(req.file.path);
-    console.log(users);
-    res.status(200).json({ message: 'File uploaded!' });
-  } catch (err) {
-    next();
-  }
-});
+// router.post('/test', async (req, res, next) => {
+//   try {
+//     const users = await readFile(req.file.path);
+//     console.log(users);
+//     res.status(200).json({ message: 'File uploaded!' });
+//   } catch (err) {
+//     next();
+//   }
+// });
 
 module.exports = router;

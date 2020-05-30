@@ -1,11 +1,11 @@
 const ottoman = require('ottoman');
+const db = require('../db');
 
 const laboratoryModel = ottoman.model(
   'Laboratory',
   {
     name: 'string',
     taxId: 'string',
-    email: 'string',
     address: {
       street: 'string',
       city: 'string',
@@ -13,6 +13,7 @@ const laboratoryModel = ottoman.model(
       zip: 'integer',
       country: { type: 'string', default: 'COL' },
     },
+    email: 'string',
     phone: 'string',
     active: { type: 'boolean', default: true },
     createdAt: {
@@ -26,6 +27,14 @@ const laboratoryModel = ottoman.model(
       readonly: true,
     },
     deleted: { type: 'boolean', default: false },
+  },
+  {
+    index: {
+      findByTaxId: {
+        type: 'refdoc',
+        by: 'taxId',
+      },
+    },
   },
 );
 

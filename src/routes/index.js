@@ -4,11 +4,11 @@ const authRouter = require('./auth');
 
 const routes = (app) => {
   const router = express.Router();
-  app.use('/api/users', usersRouter);
-  app.use('/api', authRouter);
+  app.use('/users', usersRouter);
+  app.use('/', authRouter);
 
-  app.use('/api', router);
-  router.get('/api', async (req, res) => {
+  app.use('/', router);
+  router.get('/', async (req, res) => {
     res.send('Hello world!');
   });
 };

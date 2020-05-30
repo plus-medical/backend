@@ -1,3 +1,38 @@
+const promise2asyncAwait = require('../utils/functions/promise2asyncAwait');
+const userModel = require('../schema/models/user');
+
+class UsersService {
+  constructor() {
+    this.model = userModel;
+  }
+
+  getUserById(id) {
+    return promise2asyncAwait(id, this.model.getById);
+  }
+
+  getUserByUsername(username) {
+    return promise2asyncAwait(username, this.model.findByUsername);
+  }
+
+  getUserByDocument(document) {
+    return promise2asyncAwait(document, this.model.findByDocument);
+  }
+
+  getUser(key) {
+    if (isNaN(key)) {
+      if (key.startsWith('@')) {
+        const username = key.slice(1);
+        return this.getUserByUsername(username);
+      }
+      return this.getUserById(key);
+    }
+    return this.getUserByDocument(key);
+  }
+}
+
+module.exports = UsersService;
+
+/*
 const ottoman = require('ottoman');
 const bcrypt = require('bcrypt');
 const sgMail = require('@sendgrid/mail');
@@ -176,3 +211,4 @@ class UsersService {
 }
 
 module.exports = UsersService;
+*/

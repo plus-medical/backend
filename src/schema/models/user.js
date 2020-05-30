@@ -1,4 +1,6 @@
 const ottoman = require('ottoman');
+const db = require('../db');
+const laboratoryModel = require('./laboratory');
 const { phoneValidator, roleValidator } = require('../../utils/validators');
 
 const userModel = ottoman.model(
@@ -33,7 +35,7 @@ const userModel = ottoman.model(
 
     speciality: 'string',
 
-    laboratory: 'Laboratory',
+    laboratory: laboratoryModel,
 
     lastLogin: {
       date: { type: 'Date', default: new Date() },
