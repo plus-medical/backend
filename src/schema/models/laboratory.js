@@ -17,7 +17,7 @@ const laboratoryModel = ottoman.model(
     },
     email: 'string',
     phone: 'string',
-    exams: [examModel],
+    exams: [{ type: examModel }],
     active: { type: 'boolean', default: true },
     createdAt: {
       type: 'Date',
