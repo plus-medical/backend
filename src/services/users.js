@@ -107,8 +107,11 @@ class UsersService {
     });
   }
 
-  getUsers(query) {
+  getUsers(query, role) {
     const filter = { ...query, deleted: false };
+    if (role !== 'administrator') {
+      filter.role = 'patient';
+    }
     const limit = filter.limit || this.limit;
     delete filter.limit;
     const skip = filter.skip || this.skip;
