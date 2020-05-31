@@ -8,7 +8,7 @@ const routes = (app) => {
   const router = express.Router();
   app.use('/api/users', usersRouter);
   app.use('/api', authRouter);
-  app.use('/api/aws-uploads', AWSUploadsRouter);
+  app.use('/api/upload', AWSUploadsRouter);
   app.use('/api/read-file', readFileRouter);
 
   app.use('/api', router);

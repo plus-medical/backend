@@ -5,9 +5,9 @@ const router = express.Router();
 
 router.post('/', async (req, res, next) => {
   try {
-    const uploaded = await uploadFile(req.file, 'avatar');
-    console.log('uploaded', uploaded);
-    res.status(201).json({ message: 'AWS upload works!', statusCode: res.statusCode });
+    const { prefix } = req.body;
+    const uploaded = await uploadFile(req.file, prefix);
+    res.status(201).json({ data: { url: uploaded.Location }, message: 'AWS upload works!', statusCode: res.statusCode });
   } catch (err) {
     next(err);
   }

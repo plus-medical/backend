@@ -1,14 +1,14 @@
 const aws = require('aws-sdk');
 const Boom = require('@hapi/boom');
-const { config: { digitalOceanAccessKeyId, digitalOceanSecretAccessKey, digitalOceanBucket } } = require('../../config');
+const { config: { s3AccessKeyId, s3SecretAccessKey, s3Bucket } } = require('../../config');
 const randomString = require('./randomString');
 
 const spacesEndpoint = new aws.Endpoint('nyc3.digitaloceanspaces.com');
 
 const s3 = new aws.S3({
   endpoint: spacesEndpoint,
-  accessKeyId: digitalOceanAccessKeyId,
-  secretAccessKey: digitalOceanSecretAccessKey,
+  accessKeyId: s3AccessKeyId,
+  secretAccessKey: s3SecretAccessKey,
 });
 
 function uploadFile(file, prefix) {
@@ -20,7 +20,7 @@ function uploadFile(file, prefix) {
     const hash = `${prefix && prefix}${date}${random}.${ext}`;
 
     const params = {
-      Bucket: digitalOceanBucket,
+      Bucket: s3Bucket,
       Key: hash,
       Body: file.buffer,
       ACL: 'public-read',
