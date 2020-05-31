@@ -54,19 +54,21 @@ class UsersService {
     return this.getUserByDocument(key);
   }
 
-  getUsers(query) {
+  getUsers(query, role) {
     const filter = { ...query, deleted: false };
     const limit = filter.limit || this.limit;
     delete filter.limit;
     const skip = filter.skip || this.skip;
     delete filter.skip;
 
+    if (role !== 'administrator') filter.role = 'patient';
+
     const options = { limit, skip, consistency: ottoman.Consistency.LOCAL };
 
     return new Promise((resolve, reject) => {
-      userModel.find(filter, options, (err, data) => {
-        if (err) reject(err);
-        resolve(data);
+      userModel.find(filter, options, (error, result) => {
+        if (error) reject(error);
+        resolve(result);
       });
     });
   }
@@ -122,9 +124,9 @@ class UsersService {
     return new Promise((resolve, reject) => {
       userModel.create(
         { ...user, username, password: hashedPassword },
-        (err, data) => {
-          if (err) return reject(err);
-          return resolve(data);
+        (error, result) => {
+          if (error) return reject(error);
+          return resolve(result);
         },
       );
     });
