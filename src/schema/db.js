@@ -22,6 +22,7 @@ ottoman.bucket.operationTimeout = 120 * 1000;
 require('./models/exam');
 require('./models/laboratory');
 require('./models/user');
+require('./models/clinicHistory');
 
 // Build the necessary indexes to function
 ottoman.ensureIndices((err) => {
