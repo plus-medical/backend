@@ -19,6 +19,7 @@ ottoman.store = new ottoman.CbStoreAdapter(myBucket, couchbase);
 // ottoman.bucket.operationTimeout = 120 * 1000;
 
 // Build my "schema" from my model files
+require('./models/exam');
 require('./models/laboratory');
 require('./models/user');
 
