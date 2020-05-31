@@ -9,6 +9,9 @@ const config = {
   businessMail: process.env.BUSINESS_MAIL,
   sendgridApiKey: process.env.SENDGRID_API_KEY,
   authJwtSecret: process.env.AUTH_JWT_SECRET,
+  s3Bucket: process.env.S3_BUCKET,
+  s3AccessKeyId: process.env.S3_ACCESS_KEY_ID,
+  s3SecretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
 };
 
 module.exports = { config };
