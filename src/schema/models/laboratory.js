@@ -31,7 +31,10 @@ const laboratoryModel = ottoman.model(
   },
   {
     index: {
-      findByTaxId: {
+      findByName: {
+        by: 'name',
+      },
+      findByDocument: {
         type: 'refdoc',
         by: 'taxId',
       },
