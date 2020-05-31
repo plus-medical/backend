@@ -8,10 +8,10 @@ const auth = require('../utils/middlewares/auth');
 
 const userService = new UsersService();
 
-router.get('/', auth('administrator'), async (req, res, next) => {
-  const { query } = req;
+router.get('/', auth(['administrator', 'doctor', 'lab-worker']), async (req, res, next) => {
+  const { query, user: { role } } = req;
   try {
-    const users = await userService.getUsers(query);
+    const users = await userService.getUsers(query, role);
     res.status(200).json({ data: users, message: 'users listed' });
   } catch (error) {
     next(error);
