@@ -33,8 +33,9 @@ const clinicHistoryModel = ottoman.model(
   },
   {
     index: {
-      findByName: {
-        by: 'name',
+      findByUserDocument: {
+        type: 'refdoc',
+        by: 'user.document',
       },
     },
   },
