@@ -48,7 +48,8 @@ router.get('/:key', async (req, res, next) => {
   }
 });
 
-router.post('/', auth([roles.ADMINISTRATOR]), async (req, res, next) => {
+// router.post('/', auth([roles.ADMINISTRATOR]), async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   const { body: user } = req;
   try {
     const newUser = await userService.createUser({ user });
