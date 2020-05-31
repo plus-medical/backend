@@ -28,7 +28,7 @@ class ExamsService {
     });
   }
 
-  getExams(query, role) {
+  getExams(query) {
     const filter = { ...query, deleted: false };
     const limit = filter.limit || this.limit;
     delete filter.limit;
