@@ -28,8 +28,7 @@ router.get('/:key', async (req, res, next) => {
   }
 });
 
-// router.post('/', validationHandler(createUserSchema), async (req, res, next) => {
-router.post('/', async (req, res, next) => {
+router.post('/', auth(['administrator', 'doctor', 'lab-worker']), async (req, res, next) => {
   const { body: user } = req;
   try {
     const newUser = await userService.createUser({ user });

@@ -1,4 +1,5 @@
 const ottoman = require('ottoman');
+// eslint-disable-next-line no-unused-vars
 const db = require('../db');
 const laboratoryModel = require('./laboratory');
 const { phoneValidator, roleValidator } = require('../../utils/validators');
