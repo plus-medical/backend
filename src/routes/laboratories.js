@@ -31,7 +31,7 @@ router.get('/', auth([roles.ADMINISTRATOR]), async (req, res, next) => {
 
 router.get(
   '/:key',
-  auth([roles.ADMINISTRATOR], roles.ADMINISTRATOR),
+  auth([roles.ADMINISTRATOR]),
   async (req, res, next) => {
     const { key } = req.params;
     try {
