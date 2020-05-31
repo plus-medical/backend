@@ -1,6 +1,7 @@
 const ottoman = require('ottoman');
 // eslint-disable-next-line no-unused-vars
 const db = require('../db');
+const examModel = require('./exam');
 
 const laboratoryModel = ottoman.model(
   'Laboratory',
@@ -16,6 +17,7 @@ const laboratoryModel = ottoman.model(
     },
     email: 'string',
     phone: 'string',
+    exams: [examModel],
     active: { type: 'boolean', default: true },
     createdAt: {
       type: 'Date',
