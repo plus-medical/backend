@@ -1,4 +1,7 @@
 const ottoman = require('ottoman');
+// eslint-disable-next-line no-unused-vars
+const db = require('../db');
+const laboratoryModel = require('./laboratory');
 const { phoneValidator, roleValidator } = require('../../utils/validators');
 
 const userModel = ottoman.model(
@@ -32,6 +35,8 @@ const userModel = ottoman.model(
     maritalStatus: 'string',
 
     speciality: 'string',
+
+    laboratory: laboratoryModel,
 
     lastLogin: {
       date: { type: 'Date', default: new Date() },

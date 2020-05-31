@@ -1,11 +1,11 @@
 const express = require('express');
-const UsersService = require('../services/users');
+const AuthService = require('../services/auth');
 const { config } = require('../config');
 const { nextMonth } = require('../utils/dates');
 const validationHandler = require('../utils/middlewares/validationHandler');
 const { signinSchema } = require('../utils/validationSchemas/users');
 
-const usersService = new UsersService();
+const authService = new AuthService();
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.post(
   async (req, res, next) => {
     const { body: credentials } = req;
     try {
-      const { token, user } = await usersService.signinService(credentials);
+      const { token, user } = await authService.signIn(credentials);
       res
         .cookie('token', token, {
           httpOnly: !config.dev,

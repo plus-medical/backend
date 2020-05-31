@@ -8,6 +8,7 @@ const config = {
   dbName: process.env.DB_NAME,
   businessMail: process.env.BUSINESS_MAIL,
   sendgridApiKey: process.env.SENDGRID_API_KEY,
+  disableSendmail: process.env.DISABLE_SENDMAIL || false,
   authJwtSecret: process.env.AUTH_JWT_SECRET,
   s3Bucket: process.env.S3_BUCKET,
   s3AccessKeyId: process.env.S3_ACCESS_KEY_ID,

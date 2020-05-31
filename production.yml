@@ -10,13 +10,17 @@ services:
       dockerfile: ./compose/production/api/Dockerfile
     image: '${CI_REGISTRY_IMAGE}/backend_local_api:latest'
     environment:
-      - MDB_NAME=platzi-store
+      - DB_NAME=platzi-store
       - DB_PASSWORD='${DB_PASSWORD}'
       - DB_URL=couchbase://db
       - DB_NAME=plus-medical
       - BUSINESS_MAIL='${BUSINESS_MAIL}'
       - SENDGRID_API_KEY='${SENDGRID_API_KEY}'
       - AUTH_JWT_SECRET='${AUTH_JWT_SECRET}'
+      - DISABLE_SENDMAIL='${DISABLE_SENDMAIL}'
+      - S3_BUCKET='${S3_BUCKET}'
+      - S3_ACCESS_KEY_ID='${S3_ACCESS_KEY_ID}'
+      - S3_SECRET_ACCESS_KEY='${S3_SECRET_ACCESS_KEY}'
     networks:
       - traefik-public
       - default
@@ -36,7 +40,8 @@ services:
         - traefik.http.routers.plus-medical-api-https.tls.certresolver=le
         - traefik.http.services.plus-medical-api.loadbalancer.server.port=3000
     depends_on:
-      - wait
+      - db
+    command: ['.scripts/wait.sh', 'db:8091', '--', 'npm', 'start']
     volumes:
       - .:/usr/src
       - /usr/src/node_modules
@@ -63,16 +68,7 @@ services:
         - traefik.http.services.plus-medical-db.loadbalancer.server.port=8091
     volumes:
       - local_couchbase_data:/opt/couchbase/var/lib/couchbase
-      
-  wait:
-    build:
-      context: .
-      dockerfile: ./compose/production/wait/Dockerfile
-    image: backend_production_wait
-    depends_on:
-      - db
-    
-    
+
 networks:
   traefik-public:
     external: true

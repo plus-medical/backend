@@ -2,8 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 const UsersService = require('../services/users');
-const validationHandler = require('../utils/middlewares/validationHandler');
-const { createUserSchema } = require('../utils/validationSchemas/users');
+// const validationHandler = require('../utils/middlewares/validationHandler');
+// const { createUserSchema } = require('../utils/validationSchemas/users');
 const auth = require('../utils/middlewares/auth');
 
 const userService = new UsersService();
@@ -28,7 +28,7 @@ router.get('/:key', async (req, res, next) => {
   }
 });
 
-router.post('/', validationHandler(createUserSchema), async (req, res, next) => {
+router.post('/', auth(['administrator', 'doctor', 'lab-worker']), async (req, res, next) => {
   const { body: user } = req;
   try {
     const newUser = await userService.createUser({ user });

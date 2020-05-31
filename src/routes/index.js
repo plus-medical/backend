@@ -6,13 +6,13 @@ const readFileRouter = require('./readFile');
 
 const routes = (app) => {
   const router = express.Router();
-  app.use('/api/users', usersRouter);
-  app.use('/api', authRouter);
-  app.use('/api/upload', AWSUploadsRouter);
-  app.use('/api/read-file', readFileRouter);
+  app.use('/', authRouter);
+  app.use('/users', usersRouter);
+  app.use('/upload', AWSUploadsRouter);
+  app.use('/read-file', readFileRouter);
 
-  app.use('/api', router);
-  router.get('/api', async (req, res) => {
+  app.use('/', router);
+  router.get('/', async (req, res) => {
     res.send('Hello world!');
   });
 };
