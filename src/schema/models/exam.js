@@ -1,23 +1,11 @@
 const ottoman = require('ottoman');
 // eslint-disable-next-line no-unused-vars
 const db = require('../db');
-const examModel = require('./exam');
 
-const laboratoryModel = ottoman.model(
-  'Laboratory',
+const examModel = ottoman.model(
+  'Exam',
   {
     name: 'string',
-    taxId: 'string',
-    address: {
-      street: 'string',
-      city: 'string',
-      state: 'string',
-      zip: 'integer',
-      country: { type: 'string', default: 'COL' },
-    },
-    email: 'string',
-    phone: 'string',
-    exams: [examModel],
     active: { type: 'boolean', default: true },
     createdAt: {
       type: 'Date',
@@ -36,12 +24,8 @@ const laboratoryModel = ottoman.model(
       findByName: {
         by: 'name',
       },
-      findByDocument: {
-        type: 'refdoc',
-        by: 'taxId',
-      },
     },
   },
 );
 
-module.exports = laboratoryModel;
+module.exports = examModel;
