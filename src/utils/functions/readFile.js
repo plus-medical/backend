@@ -1,4 +1,3 @@
-const fs = require('fs');
 const XLSX = require('xlsx');
 const Boom = require('@hapi/boom');
 
@@ -72,7 +71,7 @@ function readCSV(data) {
 
 function readExcel(file) {
   const columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
-  const workbook = XLSX.readFile(file);
+  const workbook = XLSX.read(file);
   let sheet;
   if (workbook.Sheets.Hoja1) {
     sheet = 'Hoja1';
@@ -90,15 +89,14 @@ function readExcel(file) {
   return users;
 }
 
-async function readFile(file) {
-  const data = await fs.promises.readFile(file, { encoding: 'utf-8' });
+function readFile(file) {
+  const data = file.buffer.toString();
   let users;
   if (data.includes('[Content_Types]')) {
-    users = readExcel(file);
+    users = readExcel(file.buffer);
   } else {
     users = readCSV(data);
   }
-  await fs.promises.unlink(file);
   return users;
 }
 

@@ -9,6 +9,9 @@ const config = {
   businessMail: process.env.BUSINESS_MAIL,
   sendgridApiKey: process.env.SENDGRID_API_KEY,
   authJwtSecret: process.env.AUTH_JWT_SECRET,
+  digitalOceanBucket: process.env.DIGITAL_OCEAN_BUCKET,
+  digitalOceanAccessKeyId: process.env.DIGITAL_OCEAN_ACCESS_KEY_ID,
+  digitalOceanSecretAccessKey: process.env.DIGITAL_OCEAN_SECRET_ACCESS_KEY,
 };
 
 module.exports = { config };
