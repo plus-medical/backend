@@ -1,5 +1,4 @@
 const express = require('express');
-const path = require('path');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const debug = require('debug')('app:server');
@@ -19,7 +18,7 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(multer({
-  dest: path.join(__dirname, 'uploads'),
+  storage: multer.memoryStorage(),
 }).single('file'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

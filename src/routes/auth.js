@@ -4,7 +4,6 @@ const { config } = require('../config');
 const { nextMonth } = require('../utils/dates');
 const validationHandler = require('../utils/middlewares/validationHandler');
 const { signinSchema } = require('../utils/validationSchemas/users');
-// const readFile = require('../utils/functions/readFile');
 
 const authService = new AuthService();
 
@@ -34,15 +33,5 @@ router.post(
 router.post('/logout', (req, res) => {
   res.clearCookie('token').status(200).json({ message: 'Session finished' });
 });
-
-// router.post('/test', async (req, res, next) => {
-//   try {
-//     const users = await readFile(req.file.path);
-//     console.log(users);
-//     res.status(200).json({ message: 'File uploaded!' });
-//   } catch (err) {
-//     next();
-//   }
-// });
 
 module.exports = router;
