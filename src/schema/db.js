@@ -22,6 +22,7 @@ ottoman.store = new ottoman.CbStoreAdapter(myBucket, couchbase);
 require('./models/exam');
 require('./models/laboratory');
 require('./models/user');
+require('./models/clinicHistory');
 
 // Build the necessary indexes to function
 ottoman.ensureIndices((err) => {
