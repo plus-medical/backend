@@ -66,7 +66,7 @@ class UsersService {
     const options = { limit, skip, consistency: ottoman.Consistency.LOCAL };
 
     return new Promise((resolve, reject) => {
-      userModel.find(filter, options, (error, result) => {
+      this.model.find(filter, options, (error, result) => {
         if (error) reject(error);
         resolve(result);
       });
@@ -112,7 +112,8 @@ class UsersService {
       throw Boom.conflict('This email already exists');
     }
     const username = await this.usernameGenerator({ first, last, document });
-    const password = config.dev ? '12345' : randomString(10);
+    // const password = config.dev ? '12345' : randomString(10);
+    const password = '12345';
     const hashedPassword = await bcrypt.hash(password, 10);
     if (!config.disableSendmail) {
       await sendMail(
@@ -122,7 +123,7 @@ class UsersService {
       );
     }
     return new Promise((resolve, reject) => {
-      userModel.create(
+      this.model.create(
         { ...user, username, password: hashedPassword },
         (error, result) => {
           if (error) return reject(error);
@@ -150,7 +151,7 @@ class UsersService {
 
   deleteUser(id) {
     return new Promise((resolve, reject) => {
-      userModel.getById(id, (error, result) => {
+      this.model.getById(id, (error, result) => {
         if (error) reject(error);
         // eslint-disable-next-line no-param-reassign
         result.deleted = true;

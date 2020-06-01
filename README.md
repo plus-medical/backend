@@ -39,7 +39,7 @@ DB_NAME=plus-medical
 ```
 
 **Step - 7** : See the request documentation at
-[Documentation]().
+[API Documentation](https://documenter.getpostman.com/view/1710498/SztEZ6YA?version=latest).
 
 ## Testing and coverage
 

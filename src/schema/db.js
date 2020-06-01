@@ -16,11 +16,13 @@ debug(connectionString);
 const myCluster = new couchbase.Cluster(connectionString);
 const myBucket = myCluster.openBucket(dbName, encodeURIComponent(dbPassword));
 ottoman.store = new ottoman.CbStoreAdapter(myBucket, couchbase);
-// ottoman.bucket.operationTimeout = 120 * 1000;
+ottoman.bucket.operationTimeout = 120 * 1000;
 
 // Build my "schema" from my model files
+require('./models/exam');
 require('./models/laboratory');
 require('./models/user');
+require('./models/clinicHistory');
 
 // Build the necessary indexes to function
 ottoman.ensureIndices((err) => {

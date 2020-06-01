@@ -1,15 +1,15 @@
 const express = require('express');
 
 const router = express.Router();
-const UsersService = require('../services/users');
+const ExamsService = require('../services/exams');
 const auth = require('../utils/middlewares/auth');
 
 const verbs = require('../utils/constants/responseVerbs');
 const response = require('../utils/functions/response');
 const roles = require('../utils/constants/roles');
 
-const userService = new UsersService();
-const entity = 'user';
+const examsService = new ExamsService();
+const entity = 'exam';
 
 router.get(
   '/',
@@ -20,11 +20,11 @@ router.get(
       user: { role },
     } = req;
     try {
-      const users = await userService.getUsers(query, role);
+      const exams = await examsService.getExams(query, role);
       response({
         entity,
         verb: verbs.LIST,
-        data: users,
+        data: exams,
         res,
       });
     } catch (error) {
@@ -33,30 +33,35 @@ router.get(
   },
 );
 
-router.get('/:key', async (req, res, next) => {
-  const { key } = req.params;
-  try {
-    const user = await userService.getUser(key);
-    response({
-      entity,
-      verb: verbs.RETRIEVE,
-      data: user,
-      res,
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+router.get(
+  '/:key',
+  auth([roles.ADMINISTRATOR, roles.DOCTOR, roles.LAB_WORKER]),
+  async (req, res, next) => {
+    const { key } = req.params;
+    try {
+      const exam = await examsService.getExamById(key);
+      response({
+        entity,
+        verb: verbs.RETRIEVE,
+        data: exam,
+        res,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
-// router.post('/', auth([roles.ADMINISTRATOR]), async (req, res, next) => {
-router.post('/', async (req, res, next) => {
-  const { body: user } = req;
+router.post('/', auth([roles.ADMINISTRATOR]), async (req, res, next) => {
+  const { body: exam } = req;
   try {
-    const newUser = await userService.createUser({ user });
+    const newExam = await examsService.createExam({
+      exam,
+    });
     response({
       entity,
       verb: verbs.CREATE,
-      data: newUser,
+      data: newExam,
       res,
     });
   } catch (error) {
@@ -66,13 +71,15 @@ router.post('/', async (req, res, next) => {
 
 router.put('/:id', auth([roles.ADMINISTRATOR]), async (req, res, next) => {
   const { id } = req.params;
-  const { body: user } = req;
+  const { body: exam } = req;
   try {
-    const updateUser = await userService.updateUser(id, { user });
+    const updateExam = await examsService.updateExam(id, {
+      exam,
+    });
     response({
       entity,
       verb: verbs.UPDATE,
-      data: updateUser,
+      data: updateExam,
       res,
     });
   } catch (error) {
@@ -83,11 +90,11 @@ router.put('/:id', auth([roles.ADMINISTRATOR]), async (req, res, next) => {
 router.delete('/:id', auth([roles.ADMINISTRATOR]), async (req, res, next) => {
   const { id } = req.params;
   try {
-    const user = await userService.deleteUser(id);
+    const exam = await examsService.deleteExam(id);
     response({
       entity,
       verb: verbs.DELETE,
-      data: user,
+      data: exam,
       res,
     });
   } catch (error) {
