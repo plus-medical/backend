@@ -11,13 +11,13 @@ const readFileRouter = require('./readFile');
 const routes = (app) => {
   const router = express.Router();
 
-  app.use('/', authRouter);
-  app.use('/clinic-histories', clinicHistoriesRouter);
-  app.use('/exams', examsRouter);
-  app.use('/laboratories', laboratoriesRouter);
-  app.use('/read-file', readFileRouter);
-  app.use('/users', usersRouter);
-  app.use('/upload', AWSUploadsRouter);
+  // app.use('/', authRouter);
+  // app.use('/clinic-histories', clinicHistoriesRouter);
+  // app.use('/exams', examsRouter);
+  // app.use('/laboratories', laboratoriesRouter);
+  // app.use('/read-file', readFileRouter);
+  // app.use('/users', usersRouter);
+  // app.use('/upload', AWSUploadsRouter);
 
   app.use('/', router);
   router.get('/', async (req, res) => {
