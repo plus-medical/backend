@@ -29,7 +29,7 @@
     "@hapi/boom": "9.1.0",
     "@hapi/joi": "17.1.1",
     "@sendgrid/mail": "7.1.1",
-    "aws-sdk": "2.686.0",
+    "aws-sdk": "2.814.0",
     "bcrypt": "4.0.1",
     "cookie-parser": "1.4.5",
     "cors": "2.8.5",
